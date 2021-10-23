@@ -1,200 +1,161 @@
 { config, pkgs, lib, ... }: with lib; let
     cfg = config.services.go-cqhttp;
     yaml = pkgs.formats.yaml {};
-    server = types.oneOf [
-        (types.submodule {
-            options.http = {
-                host = mkOption {
-                    type = types.str;
-                    default = "127.0.0.1";
-                    description = "服务端监听地址";
-                };
-                port = mkOption {
-                    type = types.int;
-                    default = 5700;
-                    description = "服务端监听端口";
-                };
-                timeout = mkOption {
-                    type = types.int;
-                    default = 5;
-                    description = ''
-                        反向 HTTP 超时时间, 单位秒
-                        最小值为 5 ，小于 5 将会忽略本项设置
-                    '';
-                };
-                post = mkOption {
-                    type = types.nullOr types.listOf {
-                        url = mkOption {
-                            type = types.str;
-                            description = "地址";
-                        };
-                        secret = mkOption {
-                            type = types.str;
-                            description = "密钥";
-                        };
-                    };
-                    default = null;
-                    description = "反向 HTTP POST 地址列表";
-                };
-                middlewires = mkOption {
-                    type = types.attrsOf middlewire;
-                    default = {
-                        default-middlewares = {
-                            access-token = "";
-                            filter = "";
-                            rate-limit = {
-                                enabled = false;
-                                frequency = 1;
-                                bucket = 1;
-                            };
-                        };
-                    };
-                    description = "middlewires";
-                };
-            };
-        })
-        (types.submodule {
-            options.ws = {
-                host = mkOption {
-                    type = types.str;
-                    default = "127.0.0.1";
-                    description = "正向 WS 服务器监听地址";
-                };
-                port = mkOption {
-                    type = types.int;
-                    default = 6700;
-                    description = "正向 WS 服务器监听端口";
-                };
-                middlewires = mkOption {
-                    type = types.attrsOf middlewire;
-                    default = {
-                        default-middlewares = {
-                            access-token = "";
-                            filter = "";
-                            rate-limit = {
-                                enabled = false;
-                                frequency = 1;
-                                bucket = 1;
-                            };
-                        };
-                    };
-                    description = "middlewires";
-                };
-            };
-        })
-        (types.submodule {
-            options.ws-reverse = {
-                universal = mkOption {
-                    type = types.nullOr types.str;
-                    default = null;
-                    example = "ws://your_websocket_universal.server";
-                    description = ''
-                        反向WS Universal 地址
-                        注意 设置了此项地址后 api 和 event 两项将会被忽略
-                    '';
-                };
-                api = mkOption {
-                    type = types.nullOr types.str;
-                    default = null;
-                    example = "ws://your_websocket_api.server";
-                    description = "反向 WS API 地址";
-                };
-                event = mkOption {
-                    type = types.nullOr types.str;
-                    default = null;
-                    example = "ws://your_websocket_event.server";
-                    description = "反向 WS Event 地址";
-                };
-                reconnect-interval = mkOption {
-                    type = types.int;
-                    default = 3000;
-                    description = "重连间隔 单位毫秒";
-                };
-                middlewires = mkOption {
-                    type = types.attrsOf middlewire;
-                    default = {
-                        default-middlewares = {
-                            access-token = "";
-                            filter = "";
-                            rate-limit = {
-                                enabled = false;
-                                frequency = 1;
-                                bucket = 1;
-                            };
-                        };
-                    };
-                    description = "middlewires";
-                };
-            };
-        })
-        (types.submodule {
-            options.pprof = {
-                host = mkOption {
-                    type = types.str;
-                    default = "127.0.0.1";
-                    description = "pprof 服务器监听地址";
-                };
-                port = mkOption {
-                    type = types.int;
-                    default = 7700;
-                    description = "pprof 服务器监听端口";
-                };
-            };
-        })
-        (types.submodule {
-            options.lambda = {
-                type = mkOption {
-                    type = types.enum [ "scf" "aws" ];
-                    default = "scf";
-                    description = "可用 scf,aws (aws未经过测试)";
-                };
-                middlewires = mkOption {
-                    type = types.attrsOf middlewire;
-                    default = {
-                        default-middlewares = {
-                            access-token = "";
-                            filter = "";
-                            rate-limit = {
-                                enabled = false;
-                                frequency = 1;
-                                bucket = 1;
-                            };
-                        };
-                    };
-                    description = "middlewires";
-                };
-            };
-        })
-    ];
-    middlewire = {
-        access-token = mkOption {
-            type = types.str;
-            default = "";
-            description = "访问密钥, 强烈推荐在公网的服务器设置";
-        };
-        filter = mkOption {
-            type = types.str;
-            default = "";
-            description = "事件过滤器文件目录";
-        };
-        rate-limit = {
-            enabled = mkOption {
-                type = types.bool;
-                default = false;
-                description = "是否启用限速";
-            };
-            frequency = mkOption {
-                type = types.int;
-                default = 1;
-                description = "令牌回复频率, 单位秒";
-            };
-            bucket = mkOption {
-                type = types.int;
-                default = 1;
-                description = "令牌桶大小";
-            };
-        };
-    };
+    # server = types.oneOf [
+    #     (types.submodule {
+    #         options.http = {
+    #             host = mkOption {
+    #                 type = types.str;
+    #                 default = "127.0.0.1";
+    #                 description = "服务端监听地址";
+    #             };
+    #             port = mkOption {
+    #                 type = types.int;
+    #                 default = 5700;
+    #                 description = "服务端监听端口";
+    #             };
+    #             timeout = mkOption {
+    #                 type = types.int;
+    #                 default = 5;
+    #                 description = ''
+    #                     反向 HTTP 超时时间, 单位秒
+    #                     最小值为 5 ，小于 5 将会忽略本项设置
+    #                 '';
+    #             };
+    #             post = mkOption {
+    #                 type = types.nullOr types.listOf {
+    #                     url = mkOption {
+    #                         type = types.str;
+    #                         description = "地址";
+    #                     };
+    #                     secret = mkOption {
+    #                         type = types.str;
+    #                         description = "密钥";
+    #                     };
+    #                 };
+    #                 default = null;
+    #                 description = "反向 HTTP POST 地址列表";
+    #             };
+    #             inherit middlewires;
+    #         };
+    #     })
+    #     (types.submodule {
+    #         options.ws = {
+    #             host = mkOption {
+    #                 type = types.str;
+    #                 default = "127.0.0.1";
+    #                 description = "正向 WS 服务器监听地址";
+    #             };
+    #             port = mkOption {
+    #                 type = types.int;
+    #                 default = 6700;
+    #                 description = "正向 WS 服务器监听端口";
+    #             };
+    #             inherit middlewires;
+    #         };
+    #     })
+    #     (types.submodule {
+    #         options.ws-reverse = {
+    #             universal = mkOption {
+    #                 type = types.nullOr types.str;
+    #                 default = null;
+    #                 example = "ws://your_websocket_universal.server";
+    #                 description = ''
+    #                     反向WS Universal 地址
+    #                     注意 设置了此项地址后 api 和 event 两项将会被忽略
+    #                 '';
+    #             };
+    #             api = mkOption {
+    #                 type = types.nullOr types.str;
+    #                 default = null;
+    #                 example = "ws://your_websocket_api.server";
+    #                 description = "反向 WS API 地址";
+    #             };
+    #             event = mkOption {
+    #                 type = types.nullOr types.str;
+    #                 default = null;
+    #                 example = "ws://your_websocket_event.server";
+    #                 description = "反向 WS Event 地址";
+    #             };
+    #             reconnect-interval = mkOption {
+    #                 type = types.int;
+    #                 default = 3000;
+    #                 description = "重连间隔 单位毫秒";
+    #             };
+    #             inherit middlewires;
+    #         };
+    #     })
+    #     (types.submodule {
+    #         options.pprof = {
+    #             host = mkOption {
+    #                 type = types.str;
+    #                 default = "127.0.0.1";
+    #                 description = "pprof 服务器监听地址";
+    #             };
+    #             port = mkOption {
+    #                 type = types.int;
+    #                 default = 7700;
+    #                 description = "pprof 服务器监听端口";
+    #             };
+    #         };
+    #     })
+    #     (types.submodule {
+    #         options.lambda = {
+    #             type = mkOption {
+    #                 type = types.enum [ "scf" "aws" ];
+    #                 default = "scf";
+    #                 description = "可用 scf,aws (aws未经过测试)";
+    #             };
+    #             inherit middlewires;
+    #         };
+    #     })
+    # ];
+    # middlewires = mkOption {
+    #     type = types.attrsOf middlewire;
+    #     default = {
+    #         default-middlewares = {
+    #             access-token = "";
+    #             filter = "";
+    #             rate-limit = {
+    #                 enabled = false;
+    #                 frequency = 1;
+    #                 bucket = 1;
+    #             };
+    #         };
+    #     };
+    #     description = "middlewires";
+    # };
+    # middlewire = types.submodule {
+    #     options = {
+    #         access-token = mkOption {
+    #             type = types.str;
+    #             default = "";
+    #             description = "访问密钥, 强烈推荐在公网的服务器设置";
+    #         };
+    #         filter = mkOption {
+    #             type = types.str;
+    #             default = "";
+    #             description = "事件过滤器文件目录";
+    #         };
+    #         rate-limit = {
+    #             enabled = mkOption {
+    #                 type = types.bool;
+    #                 default = false;
+    #                 description = "是否启用限速";
+    #             };
+    #             frequency = mkOption {
+    #                 type = types.int;
+    #                 default = 1;
+    #                 description = "令牌回复频率, 单位秒";
+    #             };
+    #             bucket = mkOption {
+    #                 type = types.int;
+    #                 default = 1;
+    #                 description = "令牌桶大小";
+    #             };
+    #         };
+    #     };
+    # };
 in {
     options.services.go-cqhttp = {
         enable = mkEnableOption "go-cqhttp";
@@ -340,7 +301,8 @@ in {
                 '';
             };
             servers = mkOption {
-                type = types.listOf server;
+                # type = types.listOf server; # the value from submodule.check is always true
+                type = types.listOf types.anything;
                 default = [{
                     ws = {
                         host = "127.0.0.1";

@@ -1,16 +1,18 @@
 {
     description = "Anillc's nix packages";
     inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    inputs.flake-utils = {
+        url = "github:numtide/flake-utils";
+        inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    outputs = { self, nixpkgs }: let
-        pkgs = import nixpkgs { system = "x86_64-linux"; overlays = [ self.overlay ]; };
+    outputs = { self, nixpkgs, flake-utils }: flake-utils.lib.eachDefaultSystem (system: let
+        pkgs = import nixpkgs { inherit system; overlays = [ self.overlay ]; };
     in {
-        overlay = self: super: with self; {
-            go-cqhttp = callPackage ./gocq {};
-        };
-        packages.x86_64-linux = {
+        inherit (import ./packages) overlay;
+        packages = {
             inherit (pkgs) go-cqhttp;
         };
-        nixosModules.an = import ./modules;
-    };
+        nixosModule = import ./modules;
+    });
 }
