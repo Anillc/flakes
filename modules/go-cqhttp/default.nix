@@ -346,8 +346,19 @@ in {
             type = types.str;
             description = "设备信息文件";
         };
+        package = mkOption {
+            default = pkgs.go-cqhttp;
+            type = types.package;
+            description = "go-cqhttp package";
+        };
     };
     config = mkIf cfg.enable {
         environment.etc."go-cqhttp/config.yml".source = yaml.generate "config.yml" cfg.config;
+        # systemd.services.go-cqhttp = {
+        #     description = "go-cqhttp";
+        #     wantedBy = [ "multi-user.target" ];
+        #     after = [ "network.target" ];
+
+        # };
     };
 }
