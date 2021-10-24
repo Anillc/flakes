@@ -354,11 +354,17 @@ in {
     };
     config = mkIf cfg.enable {
         environment.etc."go-cqhttp/config.yml".source = yaml.generate "config.yml" cfg.config;
-        # systemd.services.go-cqhttp = {
-        #     description = "go-cqhttp";
-        #     wantedBy = [ "multi-user.target" ];
-        #     after = [ "network.target" ];
-
-        # };
+        environment.etc."go-cqhttp/device.json".source = pkgs.writeText "device.json" cfg.device;
+        systemd.services.go-cqhttp = {
+            description = "go-cqhttp";
+            wantedBy = [ "multi-user.target" ];
+            after = [ "network.target" ];
+            serviceConfig = {
+                ExecStart = "${cfg.package}/bin/go-cqhttp";
+                WorkingDirectory = "/etc/go-cqhttp";
+                Restart = "always";
+                RestartSec = 1;
+            };
+        };
     };
 }
