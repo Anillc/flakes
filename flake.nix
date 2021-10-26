@@ -7,12 +7,17 @@
     };
 
     outputs = { self, nixpkgs, flake-utils }: flake-utils.lib.eachDefaultSystem (system: let
-        pkgs = import nixpkgs { inherit system; overlays = [ self.overlay ]; };
-    in {
+        apps = import ./apps pkgs;
+        nixosModule = import ./modules;
+        pkgs = import nixpkgs { inherit system; overlays = [
+            overlay
+            (self: super: { inherit flake-utils; })
+        ]; };
         inherit (import ./packages) overlay;
+    in {
         packages = {
             inherit (pkgs) go-cqhttp;
         };
-        nixosModule = import ./modules;
+        inherit overlay apps nixosModule;
     });
 }

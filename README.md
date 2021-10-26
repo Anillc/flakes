@@ -10,7 +10,7 @@
         inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    outputs = { self, nixpkgs, anillc}: {
+    outputs = { self, nixpkgs, anillc }: {
         nixosConfigurations.default = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
             modules = [
