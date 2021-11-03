@@ -343,7 +343,7 @@ in {
             };
         };
         device = mkOption {
-            type = types.str;
+            type = types.path;
             description = "设备信息文件";
         };
         package = mkOption {
@@ -354,7 +354,7 @@ in {
     };
     config = mkIf cfg.enable {
         environment.etc."go-cqhttp/config.yml".source = yaml.generate "config.yml" cfg.config;
-        environment.etc."go-cqhttp/device.json".source = pkgs.writeText "device.json" cfg.device;
+        environment.etc."go-cqhttp/device.json".source = cfg.device;
         systemd.services.go-cqhttp = {
             description = "go-cqhttp";
             wantedBy = [ "multi-user.target" ];
