@@ -16,7 +16,6 @@
             modules = [
                 (_: {
                     imports = [ anillc.nixosModule.x86_64-linux ];
-                    nixpkgs.overlays = [ anillc.overlay.x86_64-linux ];
                 })
                 ./configuration.nix
             ];

@@ -8,7 +8,7 @@
 
     outputs = { self, nixpkgs, flake-utils }: flake-utils.lib.eachDefaultSystem (system: let
         apps = import ./apps pkgs;
-        nixosModule = import ./modules;
+        nixosModule = import ./modules self.overlay.${system};
         pkgs = import nixpkgs { inherit system; overlays = [
             overlay
             (self: super: { inherit flake-utils; })
