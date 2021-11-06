@@ -159,16 +159,6 @@
 in {
     options.services.go-cqhttp = {
         enable = mkEnableOption "go-cqhttp";
-        uin = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "QQ 账号";
-        };
-        password = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "密码 (为空时使用扫码登录)";
-        };
         config = {
             encrypt = mkOption {
                 type = types.bool;
@@ -342,8 +332,18 @@ in {
                 description = "https://docs.go-cqhttp.org/guide/config.html#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF";
             };
         };
+        uin = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "QQ 账号";
+        };
+        password = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "密码 (为空时使用扫码登录)";
+        };
         device = mkOption {
-            type = types.path;
+            type = types.str;
             description = "设备信息文件";
         };
         package = mkOption {
