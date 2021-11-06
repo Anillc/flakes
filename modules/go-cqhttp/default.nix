@@ -159,17 +159,17 @@
 in {
     options.services.go-cqhttp = {
         enable = mkEnableOption "go-cqhttp";
+        uin = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "QQ 账号";
+        };
+        password = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "密码 (为空时使用扫码登录)";
+        };
         config = {
-            uin = mkOption {
-                type = types.int;
-                default = 0;
-                description = "QQ 账号";
-            };
-            password = mkOption {
-                type = types.str;
-                default = "";
-                description = "密码 (为空时使用扫码登录)";
-            };
             encrypt = mkOption {
                 type = types.bool;
                 default = false;
@@ -353,14 +353,24 @@ in {
         };
     };
     config = mkIf cfg.enable {
-        environment.etc."go-cqhttp/config.yml".source = yaml.generate "config.yml" cfg.config;
         environment.etc."go-cqhttp/device.json".source = cfg.device;
         systemd.services.go-cqhttp = {
             description = "go-cqhttp";
             wantedBy = [ "multi-user.target" ];
             after = [ "network.target" ];
+            script = ''
+                UIN=${if cfg.uin == null then "0" else "$(cat ${cfg.uin})"}
+                PWD=${if cfg.password == null then "" else "$(cat ${cfg.password})"}
+                CONFIG=$(cat ${yaml.generate "config.yml" cfg.config})
+                cat > /etc/go-cqhttp/config.yml <<EOF
+                uin: $UIN
+                password: >-
+                  $PWD
+                $CONFIG
+                EOF
+                ${cfg.package}/bin/go-cqhttp
+            '';
             serviceConfig = {
-                ExecStart = "${cfg.package}/bin/go-cqhttp";
                 WorkingDirectory = "/etc/go-cqhttp";
                 Restart = "always";
                 RestartSec = 1;
