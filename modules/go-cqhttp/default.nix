@@ -23,7 +23,7 @@
     #                 '';
     #             };
     #             post = mkOption {
-    #                 type = types.nullOr types.listOf {
+    #                 type = types.nullOr types.listOf (types.submodule {
     #                     url = mkOption {
     #                         type = types.str;
     #                         description = "地址";
@@ -32,7 +32,7 @@
     #                         type = types.str;
     #                         description = "密钥";
     #                     };
-    #                 };
+    #                 });
     #                 default = null;
     #                 description = "反向 HTTP POST 地址列表";
     #             };
