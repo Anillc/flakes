@@ -1,9 +1,10 @@
 { pkgs, ... }: pkgs.buildGo117Module {
     name = "go-cqhttp";
-    vendorSha256 = "sha256-tL/U8JYe57FahjxwgR8Bz2u+UOeguUKCv0F9Sv1BO8Q=";
-    src = fetchTarball {
-        url = "https://github.com/Mrs4s/go-cqhttp/archive/refs/tags/v1.0.0-beta8-fix1.tar.gz";
-        sha256 = "sha256:010q7ryvgjdc7a7rzplfbcyl54vn4f98yrlnqpn3w33ijw05yks2";
+    vendorSha256 = "sha256-NV3IYgTFaSHxlKb17w4WzEhwX13MJIZX1vkBqdu/eOg=";
+    src = pkgs.fetchgit {
+        url = "https://github.com/Mrs4s/go-cqhttp.git";
+        rev = "e990860632783ffd39f461c081a83922b6db438e";
+        sha256 = "sha256-rbXPnJDjOAlaYm0T1PoPTA0jnYpzQhpZcTVLwGdLfeE=";
     };
     preBuild = ''
         substituteInPlace ./global/codec.go       --replace '"ffmpeg"' '"${pkgs.ffmpeg}/bin/ffmpeg"'
