@@ -277,7 +277,7 @@ in {
                 };
                 debug = mkOption {
                     type = types.bool;
-                    default = true;
+                    default = false;
                     description = "是否启用 DEBUG";
                 };
             };
@@ -289,6 +289,18 @@ in {
                     启用将会增加10-20MB的内存占用和一定的磁盘空间
                     关闭将无法使用 撤回 回复 get_msg 等上下文相关功能
                 '';
+            };
+            database.cache = {
+                image = mkOption {
+                    type = types.nullOr types.str;
+                    default = "data/image.db";
+                    description = "";
+                };
+                video = mkOption {
+                    type = types.nullOr types.str;
+                    default = "data/video.db";
+                    description = "";
+                };
             };
             servers = mkOption {
                 # type = types.listOf server; # the value from submodule.check is always true
