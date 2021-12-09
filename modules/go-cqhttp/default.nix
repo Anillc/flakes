@@ -160,40 +160,52 @@ in {
     options.services.go-cqhttp = {
         enable = mkEnableOption "go-cqhttp";
         config = {
-            encrypt = mkOption {
-                type = types.bool;
-                default = false;
-                description = "是否开启密码加密";
-            };
-            status = mkOption {
-                type = types.int;
-                default = 0;
-                description = "在线状态 请参考 https://docs.go-cqhttp.org/guide/config.html#在线状态";
-            };
-            relogin = {
-                delay = mkOption {
-                    type = types.int;
-                    default = 3;
-                    description = "首次重连延迟, 单位秒";
+            account = {
+                encrypt = mkOption {
+                    type = types.bool;
+                    default = false;
+                    description = "是否开启密码加密";
                 };
-                interval = mkOption {
-                    type = types.int;
-                    default = 3;
-                    description = "重连间隔";
-                };
-                max-times = mkOption {
+                status = mkOption {
                     type = types.int;
                     default = 0;
-                    description = "最大重连次数, 0为无限制";
+                    description = "在线状态 请参考 https://docs.go-cqhttp.org/guide/config.html#在线状态";
                 };
-            };
-            use-sso-address = mkOption {
-                type = types.bool;
-                default = true;
-                description = ''
-                    是否使用服务器下发的新地址进行重连
-                    注意, 此设置可能导致在海外服务器上连接情况更差
-                '';
+                relogin = {
+                    delay = mkOption {
+                        type = types.int;
+                        default = 3;
+                        description = "首次重连延迟, 单位秒";
+                    };
+                    interval = mkOption {
+                        type = types.int;
+                        default = 3;
+                        description = "重连间隔";
+                    };
+                    max-times = mkOption {
+                        type = types.int;
+                        default = 0;
+                        description = "最大重连次数, 0为无限制";
+                    };
+                };
+                use-sso-address = mkOption {
+                    type = types.bool;
+                    default = true;
+                    description = ''
+                        是否使用服务器下发的新地址进行重连
+                        注意, 此设置可能导致在海外服务器上连接情况更差
+                    '';
+                };
+                uin = mkOption {
+                    type = types.nullOr types.str;
+                    default = null;
+                    description = "QQ 账号";
+                };
+                password = mkOption {
+                    type = types.nullOr types.str;
+                    default = null;
+                    description = "密码 (为空时使用扫码登录)";
+                };
             };
             heartbeat = {
                 interval = mkOption {
@@ -344,16 +356,6 @@ in {
                 description = "https://docs.go-cqhttp.org/guide/config.html#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF";
             };
         };
-        uin = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "QQ 账号";
-        };
-        password = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "密码 (为空时使用扫码登录)";
-        };
         device = mkOption {
             type = types.str;
             description = "设备信息文件";
@@ -366,22 +368,12 @@ in {
     };
     config = mkIf cfg.enable {
         environment.etc."go-cqhttp/device.json".source = cfg.device;
+        environment.etc."go-cqhttp/config.yml".source = yaml.generate "config.yml" cfg.config;
         systemd.services.go-cqhttp = {
             description = "go-cqhttp";
             wantedBy = [ "multi-user.target" ];
             after = [ "network.target" ];
-            script = ''
-                UIN=${if cfg.uin == null then "0" else "$(cat ${cfg.uin})"}
-                PWD=${if cfg.password == null then "" else "$(cat ${cfg.password})"}
-                CONFIG=$(cat ${yaml.generate "config.yml" cfg.config})
-                cat > /etc/go-cqhttp/config.yml <<EOF
-                uin: $UIN
-                password: >-
-                  $PWD
-                $CONFIG
-                EOF
-                ${cfg.package}/bin/go-cqhttp
-            '';
+            script = "${cfg.package}/bin/go-cqhttp";
             serviceConfig = {
                 WorkingDirectory = "/etc/go-cqhttp";
                 Restart = "always";
