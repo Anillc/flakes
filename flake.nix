@@ -16,7 +16,7 @@
         inherit (import ./packages) overlay;
     in {
         packages = {
-            inherit (pkgs) go-cqhttp;
+            inherit (pkgs) go-cqhttp bird-lg-go bird-lg-go-frontend;
         };
         inherit overlay apps nixosModule;
     });
