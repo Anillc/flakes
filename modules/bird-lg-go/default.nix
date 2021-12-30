@@ -15,8 +15,8 @@ in {
         };
         bird = mkOption {
             type = types.nullOr types.str;
-            default = null;
-            description = "socket file for bird, set either in parameter or environment variable BIRD_SOCKET (default \"/var/run/bird/bird.ctl\")";
+            default = "/var/run/bird.ctl";
+            description = "socket file for bird, set either in parameter or environment variable BIRD_SOCKET (default \"/var/run/bird.ctl\")";
         };
         listen = mkOption {
             type = types.nullOr types.int;
