@@ -1,6 +1,7 @@
 
 { pkgs, ... }: pkgs.buildGo117Module {
     name = "bird-lg-go";
+    doCheck = false;
     vendorSha256 = "sha256-WKuVGiSV5LZrJ8/672TRN6tZNQxdCktHV6nx0ZxCP4A=";
     src = "${pkgs.fetchgit {
         url = "https://github.com/xddxdd/bird-lg-go.git";
