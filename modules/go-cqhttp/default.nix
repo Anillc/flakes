@@ -161,6 +161,16 @@ in {
         enable = mkEnableOption "go-cqhttp";
         config = {
             account = {
+                uin = mkOption {
+                    type = types.nullOr types.str;
+                    default = null;
+                    description = "QQ 账号";
+                };
+                password = mkOption {
+                    type = types.nullOr types.str;
+                    default = null;
+                    description = "密码 (为空时使用扫码登录)";
+                };
                 encrypt = mkOption {
                     type = types.bool;
                     default = false;
@@ -196,21 +206,11 @@ in {
                         注意, 此设置可能导致在海外服务器上连接情况更差
                     '';
                 };
-                uin = mkOption {
-                    type = types.nullOr types.str;
-                    default = null;
-                    description = "QQ 账号";
-                };
-                password = mkOption {
-                    type = types.nullOr types.str;
-                    default = null;
-                    description = "密码 (为空时使用扫码登录)";
-                };
             };
             heartbeat = {
                 interval = mkOption {
                     type = types.int;
-                    default = 3;
+                    default = 5;
                     description = ''
                         心跳频率, 单位秒
                         -1 为关闭心跳
@@ -302,24 +302,12 @@ in {
                     关闭将无法使用 撤回 回复 get_msg 等上下文相关功能
                 '';
             };
-            database.cache = {
-                image = mkOption {
-                    type = types.nullOr types.str;
-                    default = "data/image.db";
-                    description = "";
-                };
-                video = mkOption {
-                    type = types.nullOr types.str;
-                    default = "data/video.db";
-                    description = "";
-                };
-            };
             servers = mkOption {
                 # type = types.listOf server; # the value from submodule.check is always true
                 type = types.listOf types.anything;
                 default = [{
                     ws = {
-                        host = "127.0.0.1";
+                        host = "0.0.0.0";
                         port = 6700;
                         middlewires = {
                             default-middlewares = {
@@ -357,7 +345,7 @@ in {
             };
         };
         device = mkOption {
-            type = types.str;
+            type = types.path;
             description = "设备信息文件";
         };
         package = mkOption {
@@ -367,18 +355,16 @@ in {
         };
     };
     config = mkIf cfg.enable {
-        environment.etc."go-cqhttp/device.json".source = cfg.device;
-        environment.etc."go-cqhttp/config.yml".source = yaml.generate "config.yml" cfg.config;
         systemd.services.go-cqhttp = {
             description = "go-cqhttp";
             wantedBy = [ "multi-user.target" ];
-            after = [ "network.target" ];
-            script = "${cfg.package}/bin/go-cqhttp";
-            serviceConfig = {
-                WorkingDirectory = "/etc/go-cqhttp";
-                Restart = "always";
-                RestartSec = 1;
-            };
+            after = [ "network-online.target" ];
+            restartIfChanged = true;
+            script = ''
+                mkdir -p /var/go-cqhttp
+                ln -sf ${cfg.device} /var/go-cqhttp/device.json
+                ${cfg.package}/bin/go-cqhttp -w /var/go-cqhttp -c ${yaml.generate "config.yml" cfg.config}
+            '';
         };
     };
 }
