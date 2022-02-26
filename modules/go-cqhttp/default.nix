@@ -348,6 +348,11 @@ in {
             type = types.path;
             description = "设备信息文件";
         };
+        environmentFile = mkOption {
+            type = types.nullOr types.path;
+            description = "环境变量文件";
+            default = null;
+        };
         package = mkOption {
             default = pkgs.go-cqhttp;
             type = types.package;
@@ -365,6 +370,7 @@ in {
                 ln -sf ${cfg.device} /var/go-cqhttp/device.json
                 ${cfg.package}/bin/go-cqhttp -w /var/go-cqhttp -c ${yaml.generate "config.yml" cfg.config}
             '';
+            serviceConfig.EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
         };
     };
 }
