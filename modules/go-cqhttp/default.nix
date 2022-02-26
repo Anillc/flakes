@@ -368,7 +368,7 @@ in {
             script = ''
                 mkdir -p /var/go-cqhttp
                 ln -sf ${cfg.device} /var/go-cqhttp/device.json
-                ${cfg.package}/bin/go-cqhttp -w /var/go-cqhttp -c ${yaml.generate "config.yml" cfg.config}
+                ${cfg.package}/bin/go-cqhttp -w /var/go-cqhttp -faststart -c ${yaml.generate "config.yml" cfg.config}
             '';
             serviceConfig.EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
         };
