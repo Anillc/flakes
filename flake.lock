@@ -31,10 +31,31 @@
         "type": "github"
       }
     },
+    "random-src": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1646985502,
+        "narHash": "sha256-YYQu3LsIJcbANRNtneEd8riIsTknMtCl2f+Tyi83SIY=",
+        "owner": "Anillc",
+        "repo": "random-src",
+        "rev": "5c308372ecb8e764ef3fcb17aef4a62e2cd2deab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Anillc",
+        "repo": "random-src",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "random-src": "random-src"
       }
     }
   },
