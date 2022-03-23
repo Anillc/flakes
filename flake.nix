@@ -20,7 +20,10 @@
         inherit (import ./packages) overlay;
     in {
         packages = {
-            inherit (pkgs) go-cqhttp bird-lg-go bird-lg-go-frontend route-chain babelweb2 babelweb2-static telegram-bot-api random-src;
+            inherit (pkgs)
+                go-cqhttp bird-lg-go bird-lg-go-frontend
+                route-chain babelweb2 babelweb2-static
+                telegram-bot-api random-src rtrlib;
         };
         inherit overlay apps nixosModule;
     });
