@@ -22,7 +22,7 @@
         packages = {
             inherit (pkgs)
                 go-cqhttp bird-lg-go bird-lg-go-frontend
-                route-chain babelweb2 babelweb2-static
+                route-chain babelweb2 babelweb2-static wps
                 telegram-bot-api random-src rtrlib icalingua;
         };
         inherit overlay apps nixosModule;
