@@ -365,10 +365,11 @@ in {
             wantedBy = [ "multi-user.target" ];
             after = [ "network-online.target" ];
             restartIfChanged = true;
+            path = with pkgs; [ ffmpeg cfg.package ];
             script = ''
                 mkdir -p /var/go-cqhttp
                 ln -sf ${cfg.device} /var/go-cqhttp/device.json
-                ${cfg.package}/bin/go-cqhttp -w /var/go-cqhttp -faststart -c ${yaml.generate "config.yml" cfg.config}
+                go-cqhttp -w /var/go-cqhttp -faststart -c ${yaml.generate "config.yml" cfg.config}
             '';
             serviceConfig.EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
         };
