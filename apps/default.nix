@@ -1,5 +1,8 @@
-pkgs: let
+pkgs:
+
+with builtins;
+with pkgs.lib;
+
+let
     files = builtins.attrNames (removeAttrs (builtins.readDir ./.) [ "default.nix" ]);
-in builtins.foldl' (acc: x: acc // {
-    "${x}" = pkgs.callPackage ./${x} {};
-}) {} files
+in listToAttrs (map (x: nameValuePair x (pkgs.callPackage ./${x} {})) files)

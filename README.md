@@ -11,12 +11,10 @@
     };
 
     outputs = { self, nixpkgs, anillc }: {
-        nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+        nixosConfigurations.default = nixpkgs.lib.nixosSystem rec {
             system = "x86_64-linux";
             modules = [
-                (_: {
-                    imports = [ anillc.nixosModule.x86_64-linux ];
-                })
+                anillc.nixosModule.${system}
                 ./configuration.nix
             ];
         };
