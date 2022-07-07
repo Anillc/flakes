@@ -366,12 +366,12 @@ in {
             after = [ "network-online.target" ];
             restartIfChanged = true;
             path = with pkgs; [ ffmpeg cfg.package ];
+            serviceConfig.EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
             script = ''
                 mkdir -p /var/lib/go-cqhttp && cd /var/lib/go-cqhttp
                 ln -sf ${cfg.device} device.json
                 go-cqhttp -faststart -c ${yaml.generate "config.yml" cfg.config}
             '';
-            serviceConfig.EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
         };
     };
 }
