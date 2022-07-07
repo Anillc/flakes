@@ -31,6 +31,6 @@ in {
                 mkdir -p /var/lib/zinc && cd /var/lib/zinc
                 zinc
             '';
-        }
+        };
     };
 }
