@@ -8,8 +8,14 @@
         module = import ./modules overlay;
         pkgs = import nixpkgs { inherit system; };
         inherit (import ./packages pkgs) overlay packages;
-    in {
+    in with builtins; with pkgs.lib; {
         nixosModules.default = module;
-        inherit packages apps;
+        packages = packages // {
+            default = pkgs.stdenv.mkDerivation {
+                name = "packages";
+                propagatedBuildInputs = attrValues packages;
+            };
+        };
+        inherit apps;
     });
 }
