@@ -11,10 +11,9 @@
     in with builtins; with pkgs.lib; {
         nixosModules.default = module;
         packages = packages // {
-            default = pkgs.stdenv.mkDerivation {
-                name = "packages";
-                propagatedBuildInputs = attrValues packages;
-            };
+            default = pkgs.runCommand "packages" {
+                propagatedBuildInputs = filter (x: x ? ci -> x.ci) (attrValues packages);
+            } "mkdir -p $out";
         };
         inherit apps;
     });
