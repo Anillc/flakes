@@ -3,7 +3,7 @@
     inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     inputs.flake-utils.url = "github:numtide/flake-utils";
 
-    outputs = { self, nixpkgs, flake-utils }: flake-utils.lib.eachSystem [ "x86_64-linux" ] (system: let
+    outputs = { self, nixpkgs, flake-utils }: flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" ] (system: let
         apps = import ./apps pkgs;
         module = import ./modules overlay;
         pkgs = import nixpkgs { inherit system; };
