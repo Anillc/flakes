@@ -1,8 +1,28 @@
-{ pkgs, ... }: pkgs.buildGo117Module {
-    name = "go-cqhttp";
-    vendorSha256 = "sha256-9RJTl5GZAiLY1vqhxxO6XIFxKD+1QyoMBxhzceHzelg=";
-    src = fetchTarball {
-        url = "https://github.com/Mrs4s/go-cqhttp/archive/refs/tags/v1.0.0-rc1.tar.gz";
-        sha256 = "sha256:1w1l5lryg7m1y3dbcjh3b8j93imr21m5hxmlzcjkx9sd14w4jzsv";
+{ stdenv, fetchurl, autoPatchelfHook, lib, system, ... }:
+
+with builtins;
+with lib;
+
+let
+    systems = {
+        "x86_64-linux"   = "linux_amd64";
+        "aarch64-linux"  = "linux_arm64";
+        "armv7a-linux"   = "linux_armv7";
+        "armv7l-linux"   = "linux_armv7";
+        "x86_64-darwin"  = "darwin_amd64";
+        "aarch64-darwin" = "darwin_arm64";
     };
+    downloadSystem = systems.${system};
+in stdenv.mkDerivation {
+    name = "go-cqhttp";
+    src = fetchurl {
+        url = "https://github.com/Mrs4s/go-cqhttp/releases/download/v1.0.0-rc3/go-cqhttp_${downloadSystem}.tar.gz";
+        sha256 = "sha256-QSuWb0iOUpJ/5WVNwWBMwZoU5BvjhfpGBWDNr+P/Wyg=";
+    };
+    unpackCmd = "tar zvxf $src";
+    sourceRoot = ".";
+    installPhase = ''
+        mkdir -p $out/bin
+        install -m 755 go-cqhttp $out/bin
+    '';
 }
