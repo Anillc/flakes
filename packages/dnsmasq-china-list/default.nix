@@ -13,7 +13,7 @@ stdenv.mkDerivation {
     };
     buildPhase = ''
         mkdir -p $out
-        make smartdns
+        make SERVER=domestic smartdns
         cp *.smartdns.conf $out
     '';
 }
