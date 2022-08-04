@@ -206,6 +206,11 @@ in {
                         注意, 此设置可能导致在海外服务器上连接情况更差
                     '';
                 };
+                allow-temp-session = mkOption {
+                    type = types.bool;
+                    default = false;
+                    description = ''是否允许发送临时会话消息'';
+                };
             };
             heartbeat = {
                 interval = mkOption {
