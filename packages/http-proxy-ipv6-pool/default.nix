@@ -8,9 +8,9 @@ rustPlatform.buildRustPackage {
   name = "http-proxy-ipv6-pool";
   cargoSha256 = "sha256-1jaq6WQ5+994R6NPAKS0uPczqWNoQyBI7hrfZIJ2UzU=";
   src = fetchFromGitHub {
-    owner = "zu1k";
+    owner = "Anillc";
     repo = "http-proxy-ipv6-pool";
-    rev = "f8a433c88bc95f54172fbb226e839d22c8c9dac2";
-    sha256 = "sha256-2GC8vdv2EKzgYnfvOJxfALc5NRglTrQ4kJ/VI6+M32s=";
+    rev = "b366b0d3d6385905ca3acd5f8dab0362cd8a42d3";
+    sha256 = "sha256-iwF6ZSThXJiKjNBFwrei8SYZ68vpihXbPjS36d5r9q8=";
   };
 }
