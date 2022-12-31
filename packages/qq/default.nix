@@ -6,8 +6,8 @@ let
   name = "Tencent-QQ-${version}";
 
   src = fetchurl {
-    url = "https://dldir1.qq.com/qqfile/qq/QQNT/4691a571/QQ-v${version}_x64.AppImage";
-    sha256 = "sha256-7izsmUwfEAcQHj6PNcU/cprJRNHj342I62kW316vKo8=";
+    url = "https://dldir1.qq.com/qqfile/qq/QQNT/c005c911/linuxqq_3.0.0-571_x86_64.AppImage";
+    sha256 = "sha256-gKmk2m8pt2ygaHdFCWGo7+ZiQQ67VAvKH4o5OlwwPuE=";
   };
 
   appimageContents = appimageTools.extract { inherit name src; };
