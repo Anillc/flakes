@@ -16,8 +16,8 @@ let
 in stdenv.mkDerivation {
     name = "go-cqhttp";
     src = fetchurl {
-        url = "https://github.com/Mrs4s/go-cqhttp/releases/download/v1.0.0-rc4/go-cqhttp_${downloadSystem}.tar.gz";
-        sha256 = "sha256-otCnXsqBaJ02ZvaFcwDe8DiIrR+qwRvqxZRk6Jkgsbw=";
+        url = "https://github.com/Mrs4s/go-cqhttp/releases/download/v1.0.1/go-cqhttp_${downloadSystem}.tar.gz";
+        sha256 = "sha256-4tYVTPAFMWvmQSE7xG6Ea04NYnADtXra4b8WUb3Q0as=";
     };
     unpackCmd = "tar zvxf $src";
     sourceRoot = ".";
