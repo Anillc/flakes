@@ -19,5 +19,9 @@
             };
         };
         inherit apps;
-    });
+    }) // {
+        templates.default = {
+            path = ./template;
+        };
+    };
 }
